@@ -8,7 +8,28 @@ COLS = 3
 symbol_count = {"A":2,"B":4,"c":6,"d":8}
 def get_slot_machine_spin(rows,cols,symbols):
     all_symbols = []
+    for symbol,symbol_count in symbol.items(): #the loop to iterate through the dictionary created
+        for _ in range(symbol_count):
+            all_symbols.append(symbol)
+    columns = []#this formulates values in the columns which is initially empty
+    for _ in range(cols):# the _ is used to enable unlimited iterations of values
+        column = []#this is empty list for generation of the columns in the slot machine for the values being picked
+        current_symbols = all_symbols[:]#the slice operator (:) is used to ensure that the contents are not overwritten
+        for _ in range(rows):
+            value = random.choice(current_symbols)
+            current_symbols.remove(value)#to remove the firts instance so that the value cannot be choosen again
+            column.append(value)#to add the value to the column
+        column.append(column)#adds the column to the column list that exists alread
+    return columns
+def print_slot_machine(columns):#this functions aid in fliping the raws to colums while printing or outputing it because the columns are initially printed in a row format
+    for row in range(len(columns[0])):#zero is added to ensure there is always one colume before iteration otherwise it will crush
+        for i,column in enumerate(columns):
+            if i != len(columns) -1:
+                print(columns[row],"|")#the last column to be printed will not be separated by the column
+            else:
+                print(columns[row])
     
+
 
 def deposit():
     while True:# while loop to enable iteration until successful attempt
