@@ -6,7 +6,21 @@ MIN_BET = 1
 ROWS = 3
 COLS = 3
 symbol_count = {"A":2,"B":4,"c":6,"d":8}
-def get_slot_machine_spin(rows,cols,symbols):
+symbol_value = {"A":5,"B":4,"c":3,"d":2}
+def check_winnings(columns,lines,bet,values):
+    winnings = 0
+    winning_lines = []
+    for line in range(lines):
+        symbol = columns[0][line]
+        for column in columns:
+            symbol_to_check = column[line]
+            if symbol != symbol_to_check:
+                break#this checks if someone did not win then a loop start again,,because the symbol chosen must the same with the one in the column for someone to win
+        else:
+            winnings += values[symbol] * bet
+            winning_lines.append(line + 1)#give the line which the gamer won on
+    return winnings, winning_lines    
+def get_slot_machine_spin(rows,cols,symbol):
     all_symbols = []
     for symbol,symbol_count in symbol.items(): #the loop to iterate through the dictionary created
         for _ in range(symbol_count):
@@ -19,18 +33,17 @@ def get_slot_machine_spin(rows,cols,symbols):
             value = random.choice(current_symbols)
             current_symbols.remove(value)#to remove the firts instance so that the value cannot be choosen again
             column.append(value)#to add the value to the column
-        column.append(column)#adds the column to the column list that exists alread
+        columns.append(column)#adds the column to the columns list that exists alread
     return columns
 def print_slot_machine(columns):#this functions aid in fliping the raws to colums while printing or outputing it because the columns are initially printed in a row format
     for row in range(len(columns[0])):#zero is added to ensure there is always one colume before iteration otherwise it will crush
         for i,column in enumerate(columns):
             if i != len(columns) -1:
-                print(columns[row],"|")#the last column to be printed will not be separated by the column
+                print(column[row],end=" | ")#the last column to be printed will not be separated by the column
             else:
-                print(columns[row])
+                print(column[row],end="")
+        print()#this is empty print statement to takes us to next new line 
     
-
-
 def deposit():
     while True:# while loop to enable iteration until successful attempt
         amount = input("Enter Amount your want to deposit:$")
@@ -67,8 +80,7 @@ def get_bet():
         else:
             print("Please enter a number")
     return amount
-def main():
-    balance = deposit()
+def spin(balance):
     lines = get_number_of_lines()
     while True:
         bet = get_bet()
@@ -78,5 +90,20 @@ def main():
         else:
             break     
     print(f"You are betting ${bet} on {lines}.The total bet is: ${total_bet}")
-    
+    slots = get_slot_machine_spin(ROWS,COLS,symbol_count)
+    print_slot_machine(slots)#function that show how the columns should be printed out
+    winnings,winning_lines = check_winnings(slots,lines,bet,symbol_value)
+    print(f"You have won ${winnings}")
+    print(f"You have won on lines:", *winning_lines)#the * is used to give all the lines that the gamer won on
+    return winnings - total_bet
+def main():
+    balance = deposit()
+    while True:
+        print(f"The current balance is ${balance}")
+        answer = input("Press enter to spin again(and q to quit)")
+        if answer == "q":
+            break
+        balance += spin(balance)
+    print(f"You are left with ${balance}")
+
 main()#to call the main
