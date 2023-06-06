@@ -1,5 +1,6 @@
 #this is an app that makes one to deposit money and gamble to win
 import random
+import tkinter as tk# this module facilitates the creation for a GUI(graphical user interface )
 MAX_LINES = 3
 MAX_BET = 100
 MIN_BET = 1
@@ -107,3 +108,32 @@ def main():
     print(f"You are left with ${balance}")
 
 main()#to call the main
+# The following codes helps in creation of the GUI - Graphical User Interface
+def spin_button_clicked():
+    balance_var.set(spin(int(balance_var.get())))
+
+def deposit_button_clicked():
+    amount = deposit()
+    balance_var.set(amount)
+
+# Create the main window
+window = tk.Tk()
+window.title("Slot Machine App")
+
+# Create and position the GUI elements
+balance_label = tk.Label(window, text="Current Balance:")
+balance_label.pack()
+
+balance_var = tk.StringVar()
+balance_var.set("0")
+balance_display = tk.Label(window, textvariable=balance_var)
+balance_display.pack()
+
+spin_button = tk.Button(window, text="Spin", command=spin_button_clicked)
+spin_button.pack()
+
+deposit_button = tk.Button(window, text="Deposit", command=deposit_button_clicked)
+deposit_button.pack()
+
+# Run the main GUI event loop
+window.mainloop()
